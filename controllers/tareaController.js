@@ -1,32 +1,32 @@
 import mongoose from "mongoose";
 import Tarea from "../models/Tarea.js"
-import Proyecto from "../models/Proyecto.js";
+import Sprint from "../models/Sprint.js";
 
 const agregarTarea = async (req, res) => {
-    const { proyecto } = req.body;
+    const { sprint } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(proyecto)) {
-        const error = new Error('Id tarea no válido');
+    if (!mongoose.Types.ObjectId.isValid(sprint)) {
+        const error = new Error('Id sprint no válido');
         return res.status(404).json({msg: error.message});
     }
 
-    const proyectoExiste = await Proyecto.findById(proyecto)
+    const sprintExiste = await Sprint.findById(sprint)
 
-    if (!proyectoExiste) {
-        const error = new Error('Proyecto no existe');
+    if (!sprintExiste) {
+        const error = new Error('Sprint no existe');
         return res.status(404).json({msg: error.message});
     }
 
     // solo el creador del proyecto puede añadir tareas
-    if (proyectoExiste.creador.toString() !== req.usuario._id.toString()) {
-        const error = new Error('No tienes los permisos para añadir Proyectos');
+    if (sprintExiste.creador.toString() !== req.usuario._id.toString()) {
+        const error = new Error('No tienes los permisos para añadir Tareas');
         return res.status(403).json({ msg: error.message });
     }
 
     try {
         const tareaAlmacenada = await Tarea.create(req.body)
-        proyectoExiste.tareas.push(tareaAlmacenada._id)
-        await proyectoExiste.save();
+        sprintExiste.tareas.push(tareaAlmacenada._id)
+        await sprintExiste.save();
         res.json(tareaAlmacenada); 
     } catch (error) {
         console.log(error)
@@ -103,31 +103,31 @@ const actualizarTarea = async (req, res) => {
 
 const eliminarTarea = async (req, res) => {
     const { id } = req.params;
-   
+    
     if (!mongoose.Types.ObjectId.isValid(id)) {
         const error = new Error('ID no válido');
         return res.status(404).json({ msg: error.message });
     }
-
+    
     // populate hace la relación entre schemas referenciados en el modelo
-    const tarea = await Tarea.findById(id).populate("proyecto");
-
+    const tarea = await Tarea.findById(id);
+    console.log(tarea)
     if (!tarea) {
         const error = new Error('La Tarea no Existe');
         return res.status(404).json({ msg: error.message });
     }
-
+    
     // Error cuando consulta tareas que no fueron creadas por el usuario creador del proyecto
-    if (tarea.proyecto.creador.toString() !== req.usuario._id.toString()) {
-        const error = new Error('Acción no Válida');
-        return res.status(403).json({ msg: error.message });
-    }
+    // if (tarea.proyecto.creador.toString() !== req.usuario._id.toString()) {
+    //     const error = new Error('Acción no Válida');
+    //     return res.status(403).json({ msg: error.message });
+    // }
 
     try {
-        const proyecto = await Proyecto.findById(tarea.proyecto)
-        proyecto.tareas.pull(tarea._id)
+        const sprint = await Sprint.findById(tarea.sprint)
+        sprint.tareas.pull(tarea._id)
         // promesa que permite solucionar varias peticiones al tiempo
-        await Promise.allSettled([await proyecto.save(), await tarea.deleteOne()])
+        await Promise.allSettled([await sprint.save(), await tarea.deleteOne()])
         res.json({msg: "La Tarea se Eliminó Correctamente"})
 
     } catch (error) {

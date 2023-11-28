@@ -16,10 +16,10 @@ const equipoSchema = mongoose.Schema({
       ref: "Usuario",
     },
   ],
-  proyectos: [
+  sprints: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Proyecto",
+      ref: "Sprint",
     },
   ],
 },{

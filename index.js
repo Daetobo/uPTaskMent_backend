@@ -6,9 +6,8 @@ import usuarioRouter from './routes/usuarioRouter.js';
 import equipoRouter from './routes/equipoRouter.js';
 import proyectoRouter from './routes/proyectoRouter.js';
 import tareaRouter from './routes/tareaRouter.js';
+import sprintRouter from './routes/sprintRouter.js'
  
-
-
 const app = express();
 app.use(express.json());
 
@@ -39,6 +38,7 @@ app.use(cors(corsOptions));
 
 app.use('/api/usuarios',usuarioRouter)
 app.use('/api/equipos',equipoRouter)
+app.use('/api/sprints',sprintRouter)
 app.use('/api/proyectos',proyectoRouter)
 app.use('/api/tareas',tareaRouter)
 

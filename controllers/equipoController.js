@@ -7,7 +7,7 @@ const obtenerEquipos = async (req, res) => {
             {miembros : {$in: req.usuario}},
             {creador : {$in: req.usuario}},
         ]
-    }).select('-proyectos');
+    })//.select('-proyectos');
 
     res.json(equipos)
 };
@@ -29,8 +29,14 @@ const obtenerEquipo = async (req, res) => {
     const { id } = req.params;
     const equipo = await Equipo.findById(id)
     .populate('creador', "nombre" )
-    .populate('proyectos',"nombre")
     .populate('miembros',"nombre user email")
+    .populate({
+        path:'sprints',
+        select: "nombre fechaInicio fechaFinal",
+        populate:{
+            path:'tareas'
+        }
+    });
     
     if (!equipo) {
         const error = new Error('Equipo no Encontrado');

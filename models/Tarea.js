@@ -6,7 +6,7 @@ const tareaSchema = mongoose.Schema({
         trim: true,
         require: true,
     },
-    descripcion: {
+    notas: {
         type: String,
         trim: true,
         require: true,
@@ -26,7 +26,7 @@ const tareaSchema = mongoose.Schema({
         require: true,
         default: Date.now()
     },
-    fechaEntrega: {
+    fechaFinal: {
         type: Date,
         require: true,
         default: Date.now()
@@ -37,19 +37,13 @@ const tareaSchema = mongoose.Schema({
         enum: ['Baja', 'Media', 'Alta'],
     },
     sprint: {
-        type: Number,
-        trim: true,
-        require: true,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Sprint"
     },
     tiempo: {
         type: Number,
         trim: true,
         default: 0,
-    },
-    nota: {
-        type: String,
-        trim: true,
-        default:'',
     },
     proyecto: {
         type: mongoose.Schema.Types.ObjectId,

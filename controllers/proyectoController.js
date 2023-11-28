@@ -16,7 +16,7 @@ const nuevoProyecto = async (req, res) => {
 
     if (!existeEquipo) {
         const error = new Error('Equipo no existe');
-        return res.status(404).json(error.message);
+        return res.status(404).json({msg: error.message});
     }
 
     //solo creador del equipo puede añadir proyectos
@@ -107,7 +107,7 @@ const eliminarProyecto = async (req, res) => {
 
     if (!proyecto) {
         const error = new Error('Proyecto no encontrado');
-        return res.status(404).json(error.message);
+        return res.status(404).json({msg:error.message});
     }
 
     //elimina solo el creador del proyecto
